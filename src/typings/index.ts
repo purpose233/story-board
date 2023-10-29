@@ -1,6 +1,12 @@
 export interface IEditorElementConfig {
   id: string;
   type: "text";
-  position: { x: number; y: number };
   visuals: Record<string, any>;
+}
+
+export interface IVisualConfig {
+  channel: string;
+  type: "string" | "number" | "color" | "boolean";
+  default: any;
+  options?: any;
 }

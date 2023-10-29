@@ -10,7 +10,20 @@ export class EditorStore {
   }
 
   addElement(element: IEditorElementConfig) {
-    this.elements = this.elements.concat(element);
+    const nextElements = this.elements.concat(element);
+    this.elements = nextElements;
+  }
+
+  setCurrentElement(id: string | null) {
+    const element = this.elements.find((element) => element.id === id);
+    this.currentElement = element ?? null;
+  }
+
+  updateElement(element: IEditorElementConfig) {
+    const nextElements = this.elements.map((lastElement) => {
+      return lastElement.id === element.id ? element : lastElement;
+    });
+    this.elements = nextElements;
   }
 }
 

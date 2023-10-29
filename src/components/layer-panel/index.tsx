@@ -1,11 +1,11 @@
 import { Card, Tree } from "@douyinfe/semi-ui";
 import { observer } from "mobx-react";
-import { EditorStore } from "../../store/element";
+import { useEditorStore } from "../../store/element";
 
-export const LayerPanel = observer((props: { elementStore: EditorStore }) => {
-  const { elementStore } = props;
+export const LayerPanel = observer(() => {
+  const editorStore = useEditorStore();
 
-  const treeData = elementStore.elements.map((element) => {
+  const treeData = editorStore.elements.map((element) => {
     return {
       label: element.type,
       value: element.id,

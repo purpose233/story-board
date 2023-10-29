@@ -7,10 +7,11 @@ import {
 } from "@douyinfe/semi-icons";
 import type { IEditorElementConfig } from "../../typings";
 import { v4 as uuid } from "uuid";
-import { editorStoreInstance } from "../../store/element";
 import { elementVisualConfig } from "../../config/visual";
+import { useEditorStore } from "../../store/element";
 
 export const Toolbar = () => {
+  const editorStore = useEditorStore();
   return (
     <div>
       <Button className="editor-tool">
@@ -28,8 +29,8 @@ export const Toolbar = () => {
               type: "text",
               visuals,
             };
-            editorStoreInstance.addElement(textElement);
-            editorStoreInstance.setCurrentElement(textElement.id);
+            editorStore.addElement(textElement);
+            editorStore.setCurrentElement(textElement.id);
           }}
         />
       </Button>

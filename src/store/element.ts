@@ -27,4 +27,7 @@ export class EditorStore {
   }
 }
 
-export const editorStoreInstance = new EditorStore();
+const editorStoreInstance = new EditorStore();
+export const useEditorStore = () => {
+  return editorStoreInstance;
+};

@@ -1,24 +1,27 @@
 import { Card, Input, InputNumber, Switch } from "@douyinfe/semi-ui";
 import { observer } from "mobx-react";
-import { editorStoreInstance, type EditorStore } from "../../store/element";
+import { useEditorStore, type EditorStore } from "../../store/element";
 import { elementVisualConfig } from "../../config/visual";
 import { IEditorElementConfig } from "../../typings";
 
 import "./index.css";
 
-const generateVisuals = (elementConfig: IEditorElementConfig) => {
+const generateVisuals = (
+  elementConfig: IEditorElementConfig,
+  editorStore: EditorStore
+) => {
   const visualConfig = elementVisualConfig[elementConfig.type];
   if (visualConfig) {
     return visualConfig.map((visual) => {
       const value = elementConfig.visuals[visual.channel] ?? visual.default;
       const onChange = (nextValue: any) => {
-        if (editorStoreInstance.currentElement) {
-          const element = editorStoreInstance.currentElement;
+        if (editorStore.currentElement) {
+          const element = editorStore.currentElement;
           const visuals = Object.assign({}, element.visuals, {
             [visual.channel]: nextValue,
           });
           const nextElement = Object.assign({}, element, { visuals });
-          editorStoreInstance.updateElement(nextElement);
+          editorStore.updateElement(nextElement);
         }
       };
       switch (visual.type) {
@@ -77,13 +80,13 @@ const generateVisuals = (elementConfig: IEditorElementConfig) => {
   return null;
 };
 
-export const ConfigPanel = observer((props: { elementStore: EditorStore }) => {
-  const { elementStore } = props;
+export const ConfigPanel = observer(() => {
+  const editorStore = useEditorStore();
 
   return (
     <Card title="Config Panel" style={{ width: "100%", height: "100%" }}>
-      {elementStore.currentElement
-        ? generateVisuals(elementStore.currentElement)
+      {editorStore.currentElement
+        ? generateVisuals(editorStore.currentElement, editorStore)
         : null}
     </Card>
   );

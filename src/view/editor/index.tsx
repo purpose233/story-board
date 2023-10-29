@@ -1,5 +1,4 @@
 import { Layout } from "@douyinfe/semi-ui";
-import { editorStoreInstance } from "../../store/element";
 import { Toolbar } from "../../components/toolbar";
 import { DataPanel } from "../../components/data-panel";
 import { LayerPanel } from "../../components/layer-panel";
@@ -27,15 +26,15 @@ export const Editor = () => {
         </Sider>
         <Sider style={{ width: 200 }}>
           <DataPanel />
-          <LayerPanel elementStore={editorStoreInstance} />
+          <LayerPanel />
         </Sider>
         <Content>
-          <Playground elementStore={editorStoreInstance} />
+          <Playground />
         </Content>
         <Sider
           style={{ width: "300px", background: "var(--semi-color-fill-2)" }}
         >
-          <ConfigPanel elementStore={editorStoreInstance} />
+          <ConfigPanel />
         </Sider>
       </Layout>
     </Layout>

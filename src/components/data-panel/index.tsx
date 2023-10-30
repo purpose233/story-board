@@ -1,13 +1,16 @@
 import { Fragment, useState } from 'react';
-import { IconUpload } from '@douyinfe/semi-icons';
-import { Button, Card, Divider, Upload } from '@douyinfe/semi-ui';
+import { IconClose, IconDelete, IconUpload } from '@douyinfe/semi-icons';
+import { Button, Card, Divider, Modal, Upload } from '@douyinfe/semi-ui';
 import { DataSet, DataView, csvParser } from '@visactor/vdataset';
 import { v4 as uuid } from 'uuid';
 import type { DataField } from '../../typings';
+import { Preview } from './preview';
 
 import './index.css';
 
-const DataDescription = (props: { dataElement: DataElement }) => {
+const DataDescription = (props: { dataElement: DataElement; onDelete?: () => void }) => {
+  const [preview, setPreview] = useState<boolean>(false);
+
   return (
     <div>
       {props.dataElement.fields.map(field => {
@@ -28,6 +31,29 @@ const DataDescription = (props: { dataElement: DataElement }) => {
             );
         }
       })}
+      <Button
+        theme="solid"
+        type="primary"
+        style={{ marginRight: 8, marginTop: 8 }}
+        onClick={() => setPreview(!preview)}
+      >
+        Preview
+      </Button>
+      <Button theme="solid" type="danger" style={{ marginRight: 8, marginTop: 8 }} onClick={props.onDelete}>
+        <IconDelete />
+      </Button>
+
+      {preview ? (
+        <Card style={{ position: 'fixed', width: 500, height: 320, bottom: 20, zIndex: 1000 }}>
+          <IconClose
+            style={{ position: 'absolute', right: 20, top: 10, cursor: 'pointer' }}
+            onClick={() => setPreview(false)}
+          />
+          <div style={{ height: 260, marginTop: 20 }}>
+            <Preview data={props.dataElement.values} />
+          </div>
+        </Card>
+      ) : null}
     </div>
   );
 };
@@ -35,8 +61,7 @@ const DataDescription = (props: { dataElement: DataElement }) => {
 class DataElement {
   readonly id = uuid();
 
-  private values: any[];
-
+  values: any[];
   fields: DataField[];
 
   constructor(values: any[]) {

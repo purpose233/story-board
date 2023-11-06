@@ -1,38 +1,38 @@
-import type { BaseSignleEncodeSpec, IView, IGroupMark } from "@visactor/vgrammar";
+import type { BaseSignleEncodeSpec, IView, IGroupMark } from '@visactor/vgrammar';
 import { basicVisualConfig } from '../../config/visual';
-import type { GroupMark } from "./group";
-import { v4 as uuid } from "uuid";
-import type { CommonMark, CommonMarkVisual, MarkVisualKeys } from "../../typings/mark";
-import type { IVisualConfig } from "../../typings/index";
+import type { GroupMark } from './group';
+import { v4 as uuid } from 'uuid';
+import type { CommonMark, CommonMarkVisual } from '../../typings/mark';
+import type { IVisualConfig } from '../../typings/index';
 
-export interface ViewElement{
-    type: string;
-    id: string;
-    groupId: string|null;
-    visuals: CommonMarkVisual;
-    children: ViewElement[];
+export interface ViewElement {
+  type: string;
+  id: string;
+  groupId: string | null;
+  visuals: CommonMarkVisual;
+  children: ViewElement[];
 }
 
 export class BaseMark {
-  visuals: CommonMarkVisual
-  defaultVisual: IVisualConfig[]
-  type: string
-  id: string
-  visualConfig: CommonMarkVisual
-  group: GroupMark | null
-  view: IView
+  visuals: CommonMarkVisual;
+  defaultVisual: IVisualConfig[];
+  type: string;
+  id: string;
+  visualConfig: CommonMarkVisual;
+  group: GroupMark | null;
+  view: IView;
   constructor(view: IView, visualConfig: CommonMarkVisual) {
-    this.type = 'base'
-    this.visuals = {}
-    this.id = uuid()
-    this.visualConfig = visualConfig
-    this.group = null
-    this.view = view
-    this.defaultVisual = basicVisualConfig
+    this.type = 'base';
+    this.visuals = {};
+    this.id = uuid();
+    this.visualConfig = visualConfig;
+    this.group = null;
+    this.view = view;
+    this.defaultVisual = basicVisualConfig;
   }
 
   init() {
-    this.initDefaultVisual(this.defaultVisual)
+    this.initDefaultVisual(this.defaultVisual);
   }
 
   initDefaultVisual(config: IVisualConfig[]) {
@@ -40,37 +40,38 @@ export class BaseMark {
     for (const visual of config) {
       visuals[visual.channel] = visual.default;
     }
-    this.visuals = {...visuals, ...this.visualConfig}
+    this.visuals = { ...visuals, ...this.visualConfig };
   }
 
   addGroup(group: GroupMark) {
-    this.group = group
+    this.group = group;
   }
 
   updateVisuals(channel: keyof CommonMarkVisual, config: CommonMarkVisual) {
-    (this.visuals as any)[channel] = config
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (this.visuals as any)[channel] = config;
   }
 
   getVisuals(): CommonMarkVisual {
-    return this.visuals
+    return this.visuals;
   }
 
-  getElementById(id: string): CommonMark|null {
+  getElementById(id: string): CommonMark | null {
     if (this.id === id) {
-      return this
+      return this;
     }
-    return null
+    return null;
   }
 
-  getViewElementById(id: string): ViewElement|null {
+  getViewElementById(id: string): ViewElement | null {
     if (this.id === id) {
-      return this.getViewElement()
+      return this.getViewElement();
     }
-    return null
+    return null;
   }
 
-  getParentId(): string|undefined {
-    return this.group?.id
+  getParentId(): string | undefined {
+    return this.group?.id;
   }
 
   getViewElement(): ViewElement {
@@ -79,7 +80,7 @@ export class BaseMark {
       id: this.id,
       visuals: this.visuals,
       groupId: this.group?.id
-    } as ViewElement
+    } as ViewElement;
   }
 
   compile(group: IGroupMark) {

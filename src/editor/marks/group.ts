@@ -1,16 +1,16 @@
-import type { IGroupMark, IView } from "@visactor/vgrammar";
-import { BaseMark, type ViewElement } from "./base";
-import { elementVisualConfig } from "../../config/visual";
-import { MarkType, type CommonMark, type GroupMarkVisual} from "../../typings/mark";
+import type { IGroupMark, IView } from '@visactor/vgrammar';
+import { BaseMark, type ViewElement } from './base';
+import { elementVisualConfig } from '../../config/visual';
+import { MarkType, type CommonMark, type GroupMarkVisual } from '../../typings/mark';
 
 export class GroupMark extends BaseMark {
-  type: MarkType.group
+  type: MarkType.group;
   marks: CommonMark[];
   constructor(view: IView, visualConfig: GroupMarkVisual = {}) {
-    super(view, visualConfig)
-    this.type = MarkType.group
-    this.marks = []
-    this.defaultVisual = elementVisualConfig.group
+    super(view, visualConfig);
+    this.type = MarkType.group;
+    this.marks = [];
+    this.defaultVisual = elementVisualConfig.group;
   }
 
   getViewElement(): ViewElement {
@@ -20,31 +20,33 @@ export class GroupMark extends BaseMark {
       groupId: this.group?.id ?? null,
       visuals: this.visuals,
       children: this.marks.map(mark => mark.getViewElement())
-    } as ViewElement
-    return element
+    } as ViewElement;
+    return element;
   }
   addElement(element: CommonMark) {
-    this.marks.push(element)
-    element.addGroup(this)
+    this.marks.push(element);
+    element.addGroup(this);
   }
 
-  getElementById(id: string): CommonMark|null {
+  getElementById(id: string): CommonMark | null {
     if (this.id === id) {
-      return this
+      return this;
     }
-    return this.marks.find(mark => {
-      if (mark.type !== MarkType.group) {
-        return mark.getElementById(id)
-      } 
-      return mark.id === id
-    }) ?? null
+    return (
+      this.marks.find(mark => {
+        if (mark.type !== MarkType.group) {
+          return mark.getElementById(id);
+        }
+        return mark.id === id;
+      }) ?? null
+    );
   }
-  getViewElementById(id: string): ViewElement|null {
-    return this.marks.find((mark) => mark.getViewElementById(id))?.getViewElementById(id) ?? null
+  getViewElementById(id: string): ViewElement | null {
+    return this.marks.find(mark => mark.getViewElementById(id))?.getViewElementById(id) ?? null;
   }
 
   compile(group: IGroupMark) {
     const curGroup = this.view.group(group).encode(this.getVisuals());
-    this.marks.forEach(mark => mark.compile(curGroup))
+    this.marks.forEach(mark => mark.compile(curGroup));
   }
 }

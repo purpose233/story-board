@@ -2,21 +2,22 @@ import { Card, Input, InputNumber, Switch } from '@douyinfe/semi-ui';
 import { observer } from 'mobx-react';
 import { useEditorStore, type EditorStore } from '../../store/element';
 import { elementVisualConfig } from '../../config/visual';
-import { type RefObject, useEffect, useState } from 'react'
+import { type RefObject, useEffect, useState } from 'react';
 
 import './index.css';
 import type { Editor } from '../../editor/editor';
 import type { CommonMarkVisual } from '../../typings/mark';
+import React from 'react';
 
 const generateVisuals = (
-    editorStore: EditorStore,
-    editorRef: RefObject<Editor>,
-    formValues: CommonMarkVisual,
-    setFormValues: (v: object) => void
-  ) => {
-  const currentViewElement = editorStore.currentElement!
+  editorStore: EditorStore,
+  editorRef: RefObject<Editor>,
+  formValues: CommonMarkVisual,
+  setFormValues: (v: object) => void
+) => {
+  const currentViewElement = editorStore.currentElement!;
   const visualConfig = elementVisualConfig[currentViewElement.type];
-  const editor = editorRef.current!
+  const editor = editorRef.current!;
   if (visualConfig) {
     return visualConfig.map(visual => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -24,15 +25,15 @@ const generateVisuals = (
         setFormValues({
           ...formValues,
           [visual.channel]: nextValue
-        })
-        
-        const currentElement = editor.getElementById(currentViewElement.id)
+        });
+
+        const currentElement = editor.getElementById(currentViewElement.id);
         if (currentElement) {
-          currentElement.updateVisuals(visual.channel as keyof CommonMarkVisual, nextValue)
+          currentElement.updateVisuals(visual.channel as keyof CommonMarkVisual, nextValue);
           editorStore.updateElement(currentElement.getViewElement());
-          editor.render()
+          editor.render();
         }
-      }
+      };
       switch (visual.type) {
         case 'string':
           return (
@@ -40,6 +41,7 @@ const generateVisuals = (
               <span className="config-panel-entry-label">{visual.channel}:</span>
               <Input
                 // defaultValue={value}
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 value={(formValues as any)[visual.channel]}
                 onChange={onChange}
                 style={{ width: 180 }}
@@ -52,6 +54,7 @@ const generateVisuals = (
               <span className="config-panel-entry-label">{visual.channel}:</span>
               <InputNumber
                 // defaultValue={value}
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 value={(formValues as any)[visual.channel]}
                 onChange={onChange}
                 step={visual?.options?.step}
@@ -67,6 +70,7 @@ const generateVisuals = (
               <span className="config-panel-entry-label">{visual.channel}:</span>
               <Input
                 // defaultValue={value}
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 value={(formValues as any)[visual.channel]}
                 onChange={onChange}
                 style={{ width: 180 }}
@@ -79,6 +83,7 @@ const generateVisuals = (
               <span className="config-panel-entry-label">{visual.channel}:</span>
               <Switch
                 // defaultChecked={value}
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 checked={(formValues as any)[visual.channel]}
                 onChange={onChange}
               />
@@ -93,19 +98,19 @@ const generateVisuals = (
 
 export const ConfigPanel = observer(({ editorRef }: { editorRef: RefObject<Editor> }) => {
   const editorStore = useEditorStore();
-  const [formValues, setFormValues] = useState<CommonMarkVisual>({})
+  const [formValues, setFormValues] = useState<CommonMarkVisual>({});
 
   useEffect(() => {
-    const currentElement = editorStore.currentElement
+    const currentElement = editorStore.currentElement;
     if (!currentElement) {
-      return
+      return;
     }
-    const visuals = currentElement?.visuals
+    const visuals = currentElement?.visuals;
 
     setFormValues({
-      ...visuals,
-    })
-  }, [editorStore.currentElement])
+      ...visuals
+    });
+  }, [editorStore.currentElement]);
 
   return (
     <Card title="Config Panel" style={{ width: '100%', height: '100%' }}>

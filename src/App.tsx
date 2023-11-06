@@ -1,11 +1,9 @@
-import { Editor } from './view/editor'
+import { Editor } from './view/editor';
 
-import './App.css'
+import './App.css';
 
 function App() {
-  return (
-    <Editor />
-  )
+  return <Editor />;
 }
 
-export default App
+export default App;

@@ -1,19 +1,13 @@
-import { Button } from "@douyinfe/semi-ui";
-import {
-  IconArrowUpLeft,
-  IconMaximize,
-  IconMinus,
-  IconText,
-  IconGridSquare,
-} from "@douyinfe/semi-icons";
-import { useEditorStore } from "../../store/element";
-import type { RefObject } from "react";
-import type { Editor } from "../../editor/editor";
-import { elementVisualConfig } from "../../config/visual";
-import type { CommonMarkVisual } from "../../typings/mark";
+import { Button } from '@douyinfe/semi-ui';
+import { IconArrowUpLeft, IconMaximize, IconMinus, IconText, IconGridSquare } from '@douyinfe/semi-icons';
+import { useEditorStore } from '../../store/element';
+import React, { type RefObject } from 'react';
+import type { Editor } from '../../editor/editor';
+import { elementVisualConfig } from '../../config/visual';
+import type { CommonMarkVisual } from '../../typings/mark';
 
 interface Props {
-  editorRef: RefObject<Editor>
+  editorRef: RefObject<Editor>;
 }
 
 export const Toolbar = ({ editorRef }: Props) => {
@@ -21,23 +15,24 @@ export const Toolbar = ({ editorRef }: Props) => {
   // const { editor } = props
 
   const createElement = (type: string) => {
-    const defaultVisualConfigList = elementVisualConfig[type]
+    const defaultVisualConfigList = elementVisualConfig[type];
     const defaultVisualConfig: CommonMarkVisual = defaultVisualConfigList.reduce((acc, cur) => {
-      (acc as any)[cur.channel] = cur.default
-      return acc
-    }, {} as CommonMarkVisual)
-    const editor = editorRef.current!
-    let groupId
-    const currentElement = editorStore.currentElement
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (acc as any)[cur.channel] = cur.default;
+      return acc;
+    }, {} as CommonMarkVisual);
+    const editor = editorRef.current!;
+    let groupId;
+    const currentElement = editorStore.currentElement;
     if (currentElement?.type === 'group') {
-      groupId = currentElement.id
+      groupId = currentElement.id;
     }
-    const id = editor.createElement(type, defaultVisualConfig, groupId)
+    const id = editor.createElement(type, defaultVisualConfig, groupId);
     editorStore.addElement(editor.getViewElementById(id));
     editorStore.setCurrentElement(id);
-    editorStore.updateViewElements(editor.getViewElements())
-    editor.render()
-  }
+    editorStore.updateViewElements(editor.getViewElements());
+    editor.render();
+  };
   return (
     <div>
       <Button className="editor-tool">
@@ -46,14 +41,14 @@ export const Toolbar = ({ editorRef }: Props) => {
       <Button className="editor-tool">
         <IconText
           onClick={() => {
-            createElement('text')
+            createElement('text');
           }}
         />
       </Button>
       <Button className="editor-tool">
         <IconGridSquare
           onClick={() => {
-            createElement('group')
+            createElement('group');
           }}
         />
       </Button>

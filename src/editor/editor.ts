@@ -1,39 +1,39 @@
-import { View, type IView } from "@visactor/vgrammar";
-import { TextMark } from "./marks/text";
-import { GroupMark } from "./marks/group";
-import { type CommonMarkSpec, type CommonMark, MarkType } from "../typings/mark";
+import { View, type IView } from '@visactor/vgrammar';
+import { TextMark } from './marks/text';
+import { GroupMark } from './marks/group';
+import { type CommonMarkSpec, type CommonMark, MarkType } from '../typings/mark';
 
 export interface EditorConfig {
   container: string | HTMLElement;
 }
 
-export const createMarkByType = (type: string,view: IView, config: CommonMarkSpec): CommonMark => {
+export const createMarkByType = (type: string, view: IView, config: CommonMarkSpec): CommonMark => {
   switch (type) {
     case MarkType.text:
-      return new TextMark(view, config)
+      return new TextMark(view, config);
     case MarkType.group:
-      return new GroupMark(view, config)
+      return new GroupMark(view, config);
     default:
-      throw(`mark type ${type} 不存在`)
+      throw `mark type ${type} 不存在`;
   }
-}
+};
 export class Editor {
   private config: EditorConfig;
   private view!: IView;
   private layers: never[];
   private elements: CommonMark[];
-  private root: GroupMark|null;
+  private root: GroupMark | null;
   private markMap: Map<string, CommonMark>;
   constructor(config: EditorConfig) {
-    this.config = config
-    this.layers = []
-    this.elements = []
-    this.markMap = new Map()
-    this.root = null
+    this.config = config;
+    this.layers = [];
+    this.elements = [];
+    this.markMap = new Map();
+    this.root = null;
   }
 
   init() {
-    const { container, ...otherConfig } = this.config
+    const { container, ...otherConfig } = this.config;
     this.view = new View({
       width: 500,
       height: 500,
@@ -41,64 +41,63 @@ export class Editor {
       logLevel: 3,
       ...otherConfig
     });
-    window.view = this.view
-    this.root = new GroupMark(this.view)
-    this.markMap.set(this.root.id, this.root)
+    window.view = this.view;
+    this.root = new GroupMark(this.view);
+    this.markMap.set(this.root.id, this.root);
   }
 
   createElement(type: string, config: CommonMarkSpec = {}, groupId?: string) {
-    const mark = createMarkByType(type, this.view, config)
-    mark.init()
-    this.markMap.set(mark.id, mark)
+    const mark = createMarkByType(type, this.view, config);
+    mark.init();
+    this.markMap.set(mark.id, mark);
     if (groupId) {
-      const groupMark = this.markMap.get(groupId) as GroupMark
-      this.add(mark, groupMark)
+      const groupMark = this.markMap.get(groupId) as GroupMark;
+      this.add(mark, groupMark);
     } else {
-      this.add(mark, this.root!)
+      this.add(mark, this.root!);
     }
-    return mark.id
+    return mark.id;
   }
 
-
-  add (element: CommonMark, groupMark = this.root!) {
+  add(element: CommonMark, groupMark = this.root!) {
     if (groupMark.id === this.root!.id) {
-      this.elements.push(element)
+      this.elements.push(element);
     }
-    groupMark.addElement(element)
+    groupMark.addElement(element);
   }
 
   getElementById(id: string) {
-    const mark = this.markMap.get(id)
+    const mark = this.markMap.get(id);
     if (mark) {
-      return mark
+      return mark;
     }
-    throw Error('mark 不存在')
+    throw Error('mark 不存在');
   }
 
   getViewElementById(id: string) {
-    const mark = this.markMap.get(id)
+    const mark = this.markMap.get(id);
     if (mark) {
-      return mark.getViewElement()
+      return mark.getViewElement();
     }
-    throw Error('mark 不存在')
+    throw Error('mark 不存在');
   }
 
   getViewElements() {
-    return this.elements.map(el => el.getViewElement())
+    return this.elements.map(el => el.getViewElement());
   }
 
   getRootMark() {
-    return this.root
+    return this.root;
   }
 
   release() {
-    this.view.release()
+    this.view.release();
   }
 
   render() {
     this.view.removeAllGrammars();
-    const rootGroup = this.view.group(this.view.rootMark).encode(this.root!.getVisuals())
-    this.elements.forEach(element => element.compile(rootGroup))
+    const rootGroup = this.view.group(this.view.rootMark).encode(this.root!.getVisuals());
+    this.elements.forEach(element => element.compile(rootGroup));
     this.view.runAsync();
   }
 }

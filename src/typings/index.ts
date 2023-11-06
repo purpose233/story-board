@@ -1,8 +1,8 @@
-import type { IView } from "@visactor/vgrammar";
-import type { GroupMarkVisual, RectMarkVisual, TextMarkVisual } from "./mark";
-import type { Editor } from "../editor/editor";
+import type { IView } from '@visactor/vgrammar';
+import type { GroupMarkVisual, RectMarkVisual, TextMarkVisual } from './mark';
+import type { Editor } from '../editor/editor';
 
-export type IVisualConfig = IVisualTextConfig | IVisualGroupConfig | IVisualRectConfig
+export type IVisualConfig = IVisualTextConfig | IVisualGroupConfig | IVisualRectConfig;
 
 export interface IVisualTextConfig extends IVisualBaseConfig {
   channel: keyof GroupMarkVisual;
@@ -24,6 +24,6 @@ export interface IVisualBaseConfig {
 declare global {
   interface Window {
     view: IView;
-    editor: Editor
+    editor: Editor;
   }
 }

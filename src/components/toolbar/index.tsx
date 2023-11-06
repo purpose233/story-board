@@ -4,14 +4,40 @@ import {
   IconMaximize,
   IconMinus,
   IconText,
+  IconGridSquare,
 } from "@douyinfe/semi-icons";
-import type { IEditorElementConfig } from "../../typings";
-import { v4 as uuid } from "uuid";
-import { elementVisualConfig } from "../../config/visual";
 import { useEditorStore } from "../../store/element";
+import type { RefObject } from "react";
+import type { Editor } from "../../editor/editor";
+import { elementVisualConfig } from "../../config/visual";
+import type { CommonMarkVisual } from "../../typings/mark";
 
-export const Toolbar = () => {
+interface Props {
+  editorRef: RefObject<Editor>
+}
+
+export const Toolbar = ({ editorRef }: Props) => {
   const editorStore = useEditorStore();
+  // const { editor } = props
+
+  const createElement = (type: string) => {
+    const defaultVisualConfigList = elementVisualConfig[type]
+    const defaultVisualConfig: CommonMarkVisual = defaultVisualConfigList.reduce((acc, cur) => {
+      (acc as any)[cur.channel] = cur.default
+      return acc
+    }, {} as CommonMarkVisual)
+    const editor = editorRef.current!
+    let groupId
+    const currentElement = editorStore.currentElement
+    if (currentElement?.type === 'group') {
+      groupId = currentElement.id
+    }
+    const id = editor.createElement(type, defaultVisualConfig, groupId)
+    editorStore.addElement(editor.getViewElementById(id));
+    editorStore.setCurrentElement(id);
+    editorStore.updateViewElements(editor.getViewElements())
+    editor.render()
+  }
   return (
     <div>
       <Button className="editor-tool">
@@ -20,17 +46,14 @@ export const Toolbar = () => {
       <Button className="editor-tool">
         <IconText
           onClick={() => {
-            const visuals: Record<string, any> = {};
-            for (const visual of elementVisualConfig.text) {
-              visuals[visual.channel] = visual.default;
-            }
-            const textElement: IEditorElementConfig = {
-              id: uuid(),
-              type: "text",
-              visuals,
-            };
-            editorStore.addElement(textElement);
-            editorStore.setCurrentElement(textElement.id);
+            createElement('text')
+          }}
+        />
+      </Button>
+      <Button className="editor-tool">
+        <IconGridSquare
+          onClick={() => {
+            createElement('group')
           }}
         />
       </Button>

@@ -1,5 +1,5 @@
+import React, { useEffect, useRef } from 'react';
 import { Layout } from '@douyinfe/semi-ui';
-import { useEffect, useRef } from 'react';
 import { v4 as uuid } from 'uuid';
 import { Editor as MarksEditor } from '../../editor/editor';
 import { Toolbar } from '../../components/toolbar';
@@ -28,9 +28,14 @@ export const Editor = () => {
         container: containerRef.current
       });
       editorRef.current.init();
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
       window.editor = editorRef.current;
     }
-    // return () => editorRef.current?.release()
+    return () => {
+      editorRef.current?.release();
+      editorRef.current = null;
+    };
   }, []);
 
   return (

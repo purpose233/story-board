@@ -1,3 +1,4 @@
+import React, { useCallback, useEffect, useState } from 'react';
 import { Card, Tree } from '@douyinfe/semi-ui';
 import { observer } from 'mobx-react';
 import { useEditorStore } from '../../store/element';
@@ -8,8 +9,9 @@ export const LayerPanel = observer(() => {
   const editorStore = useEditorStore();
 
   const elements = editorStore.viewElements;
+  const [treeData, setTreeData] = useState<TreeNodeData[]>([]);
 
-  const generateTree = (element: ViewElement): TreeNodeData => {
+  const generateTree = useCallback((element: ViewElement): TreeNodeData => {
     const node: TreeNodeData = {
       label: element.type,
       value: element.id,
@@ -21,11 +23,14 @@ export const LayerPanel = observer(() => {
       node.children = children.map(v => generateTree(v));
     }
     return node;
-  };
+  }, []);
 
-  const treeData = elements.map(element => {
-    return generateTree(element);
-  });
+  useEffect(() => {
+    const treeData = elements.map(element => {
+      return generateTree(element);
+    });
+    setTreeData(treeData);
+  }, [elements, generateTree]);
 
   // eslint-disable-next-line no-console
   console.log('treeData');

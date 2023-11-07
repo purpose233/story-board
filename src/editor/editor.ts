@@ -41,6 +41,8 @@ export class Editor {
       logLevel: 3,
       ...otherConfig
     });
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
     window.view = this.view;
     this.root = new GroupMark(this.view);
     this.markMap.set(this.root.id, this.root);

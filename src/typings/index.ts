@@ -20,10 +20,3 @@ export interface IVisualBaseConfig {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   options?: any;
 }
-
-declare global {
-  interface Window {
-    view: IView;
-    editor: Editor;
-  }
-}

@@ -1,4 +1,4 @@
-import type { BaseSignleEncodeSpec, IView, IGroupMark } from '@visactor/vgrammar';
+import type { BaseSignleEncodeSpec, IView, IGroupMark, IMark } from '@visactor/vgrammar';
 import { basicVisualConfig } from '../../config/visual';
 import type { GroupMark } from './group';
 import { v4 as uuid } from 'uuid';
@@ -13,21 +13,25 @@ export interface ViewElement {
   children: ViewElement[];
 }
 
-export class BaseMark {
+export abstract class BaseMark {
+  readonly type: string;
+  readonly id: string;
+
   visuals: CommonMarkVisual;
   defaultVisual: IVisualConfig[];
-  type: string;
-  id: string;
   visualConfig: CommonMarkVisual;
   group: GroupMark | null;
   view: IView;
+  mark: IMark | null;
+
   constructor(view: IView, visualConfig: CommonMarkVisual) {
     this.type = 'base';
-    this.visuals = {};
     this.id = uuid();
+    this.visuals = {};
     this.visualConfig = visualConfig;
     this.group = null;
     this.view = view;
+    this.mark = null;
     this.defaultVisual = basicVisualConfig;
   }
 
@@ -84,6 +88,12 @@ export class BaseMark {
   }
 
   compile(group: IGroupMark) {
-    this.view.mark(this.type, group).encode(this.getVisuals());
+    this.mark = this.view.mark(this.type, group).encode(this.getVisuals());
+  }
+
+  release() {
+    if (this.mark) {
+      this.view.removeGrammar(this.mark);
+    }
   }
 }

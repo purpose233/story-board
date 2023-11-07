@@ -1,3 +1,4 @@
+import type { InteractionEventHandler } from '@visactor/vgrammar';
 import { View, type IView } from '@visactor/vgrammar';
 import { TextMark } from './marks/text';
 import { GroupMark } from './marks/group';
@@ -92,8 +93,12 @@ export class Editor {
     return this.root;
   }
 
-  release() {
-    this.view.release();
+  addEventListener(type: string, handler: InteractionEventHandler) {
+    this.view.addEventListener(type, handler);
+  }
+
+  removeEventListener(type: string, handler: InteractionEventHandler) {
+    this.view.removeEventListener(type, handler);
   }
 
   render() {
@@ -101,5 +106,9 @@ export class Editor {
     const rootGroup = this.view.group(this.view.rootMark).encode(this.root!.getVisuals());
     this.elements.forEach(element => element.compile(rootGroup));
     this.view.runAsync();
+  }
+
+  release() {
+    this.view.release();
   }
 }

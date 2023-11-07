@@ -4,7 +4,7 @@ import { BaseMark } from './base';
 import type { TextMarkVisual } from '../../typings/mark';
 
 export class TextMark extends BaseMark {
-  type: 'text';
+  readonly type: 'text';
   constructor(view: IView, visualConfig: TextMarkVisual) {
     super(view, visualConfig);
     this.defaultVisual = elementVisualConfig.text;

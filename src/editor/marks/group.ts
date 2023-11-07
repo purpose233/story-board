@@ -4,7 +4,7 @@ import { elementVisualConfig } from '../../config/visual';
 import { MarkType, type CommonMark, type GroupMarkVisual } from '../../typings/mark';
 
 export class GroupMark extends BaseMark {
-  type: MarkType.group;
+  readonly type: MarkType.group;
   marks: CommonMark[];
   constructor(view: IView, visualConfig: GroupMarkVisual = {}) {
     super(view, visualConfig);

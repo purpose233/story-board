@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { ListTable } from '@visactor/vtable';
 
+// eslint-disable-next-line
 export const Preview = (props: { data: any[] }) => {
   const containerRef = useRef<HTMLDivElement>();
 
@@ -20,7 +21,7 @@ export const Preview = (props: { data: any[] }) => {
       widthMode: 'adaptive'
     });
     return () => vtable.release();
-  }, []);
+  }, [props.data]);
 
   return <div id="dataEditorTable" style={{ width: '100%', height: '100%' }} ref={containerRef}></div>;
 };

@@ -40,12 +40,12 @@ export const Editor = () => {
 
   return (
     <Layout style={{ width: '100%', height: '100%' }}>
-      <Header style={commonStyle}>Header</Header>
+      <Header style={commonStyle}>Story Board</Header>
       <Layout>
         <Sider style={{ width: '80px', background: 'var(--semi-color-fill-2)' }}>
           <Toolbar editorRef={editorRef} />
         </Sider>
-        <Sider style={{ width: 200 }}>
+        <Sider style={{ width: 240 }}>
           <DataPanel />
           <LayerPanel />
         </Sider>

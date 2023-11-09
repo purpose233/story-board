@@ -1,0 +1,9 @@
+.data-panel-entry-label {
+  display: inline-block;
+  width: 80px;
+}
+
+.data-panel-entry-description {
+  display: inline-block;
+  width: 100px;
+}

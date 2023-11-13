@@ -89,6 +89,11 @@ export abstract class BaseMark {
 
   compile(group: IGroupMark) {
     this.mark = this.view.mark(this.type, group).encode(this.getVisuals());
+    // FIXME: waiting for vgrammar to provide context api
+    // eslint-disable-next-line
+    (this.mark as any).viewContext = {
+      id: this.id
+    };
   }
 
   release() {

@@ -1,8 +1,9 @@
-import type { InteractionEventHandler } from '@visactor/vgrammar';
-import { View, type IView } from '@visactor/vgrammar';
+import type { InteractionEventHandler, IView } from '@visactor/vgrammar';
+import { View } from '@visactor/vgrammar';
 import { TextMark } from './marks/text';
 import { GroupMark } from './marks/group';
 import { type CommonMarkSpec, type CommonMark, MarkType } from '../typings/mark';
+import { Interaction } from './interaction/interaction';
 
 export interface EditorConfig {
   container: string | HTMLElement;
@@ -22,11 +23,14 @@ export class Editor {
   private config: EditorConfig;
   private view!: IView;
   private layers: never[];
+  private interaction: Interaction;
   private elements: CommonMark[];
   private root: GroupMark | null;
   private markMap: Map<string, CommonMark>;
+
   constructor(config: EditorConfig) {
     this.config = config;
+    this.interaction = new Interaction(this);
     this.layers = [];
     this.elements = [];
     this.markMap = new Map();
@@ -42,9 +46,9 @@ export class Editor {
       logLevel: 3,
       ...otherConfig
     });
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     window.view = this.view;
+    this.interaction.init();
     this.root = new GroupMark(this.view);
     this.markMap.set(this.root.id, this.root);
   }

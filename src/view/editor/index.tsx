@@ -1,6 +1,5 @@
-import React, { useEffect, useRef } from 'react';
+import { useRef } from 'react';
 import { Layout } from '@douyinfe/semi-ui';
-import { v4 as uuid } from 'uuid';
 import type { Editor as MarksEditor } from '../../editor/editor';
 import { Toolbar } from '../../components/toolbar';
 import { DataPanel } from '../../components/data-panel';

@@ -5,6 +5,7 @@ import { GroupMark } from './marks/group';
 import { type CommonMarkSpec, type CommonMark, MarkType } from '../typings/mark';
 import { Interaction } from './interaction/interaction';
 import { isString } from '@visactor/vutils';
+import { RectMark } from './marks/rect';
 
 export interface EditorConfig {
   container: string | HTMLElement;
@@ -16,6 +17,8 @@ export const createMarkByType = (type: string, view: IView, config: CommonMarkSp
       return new TextMark(view, config);
     case MarkType.group:
       return new GroupMark(view, config);
+    case MarkType.rect:
+      return new RectMark(view, config);
     default:
       throw `mark type ${type} 不存在`;
   }
@@ -79,7 +82,7 @@ export class Editor {
     if (mark) {
       return mark;
     }
-    throw Error('mark 不存在');
+    return null;
   }
 
   getViewElementById(id: string) {
@@ -87,7 +90,7 @@ export class Editor {
     if (mark) {
       return mark.getViewElement();
     }
-    throw Error('mark 不存在');
+    return null;
   }
 
   getViewElements() {

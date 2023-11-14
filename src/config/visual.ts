@@ -14,12 +14,17 @@ const merge = (base: IVisualConfig[], visuals: IVisualConfig[]) => {
 export const basicVisualConfig: IVisualConfig[] = [
   { channel: 'x', type: 'number', default: 20 },
   { channel: 'y', type: 'number', default: 20 },
-  { channel: 'fill', type: 'color', default: '#000000' }
+  { channel: 'fill', type: 'color', default: '#eff7ff' }
 ];
 
 const textVisualConfig: IVisualConfig[] = merge(basicVisualConfig, [
   { channel: 'text', type: 'string', default: '文本' },
   { channel: 'fontSize', type: 'number', default: 16 }
+]);
+
+const rectVisualConfig: IVisualConfig[] = merge(basicVisualConfig, [
+  { channel: 'width', type: 'number', default: 100 },
+  { channel: 'height', type: 'number', default: 60 }
 ]);
 
 const groupVisualConfig: IVisualConfig[] = merge(basicVisualConfig, [
@@ -32,5 +37,6 @@ const groupVisualConfig: IVisualConfig[] = merge(basicVisualConfig, [
 
 export const elementVisualConfig: Record<string, IVisualConfig[]> = {
   text: textVisualConfig,
+  rect: rectVisualConfig,
   group: groupVisualConfig
 };

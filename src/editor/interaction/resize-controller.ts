@@ -155,7 +155,7 @@ export class ResizeController {
       const currentPoint = { x: event.clientX, y: event.clientY };
       const nextRect = this.computeRect(currentPoint);
       this.update(nextRect);
-      this.resizeListeners.forEach(listener => listener.call(null, event, nextRect));
+      this.resizeEndListeners.forEach(listener => listener.call(null, event, nextRect));
       this.isResizing = false;
     }
   };

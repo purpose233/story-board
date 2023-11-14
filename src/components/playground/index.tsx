@@ -5,6 +5,7 @@ import { useEditorStore } from '../../store/element';
 import { elementVisualConfig } from '../../config/visual';
 import type { CommonMarkVisual } from '../../typings/mark';
 import { editorContainerId } from '../../config/editor';
+import { CommonOperateType } from '../../typings/editor';
 
 interface Props {
   editorRef: RefObject<Editor>;
@@ -60,8 +61,15 @@ export const Playground = observer(({ editorRef }: Props) => {
     [editorRef, editorStore]
   );
 
+  const onClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    const type = editorStore.currentOperationType as string;
+    if (type !== CommonOperateType.pointer) {
+      createElement(e);
+    }
+  };
+
   return (
-    <div style={{ width: '100%', height: '100%' }} onClick={e => createElement(e)}>
+    <div style={{ width: '100%', height: '100%' }} onClick={onClick}>
       <div id={editorContainerId} style={{ position: 'relative', width: '100%', height: '100%' }}></div>
     </div>
   );

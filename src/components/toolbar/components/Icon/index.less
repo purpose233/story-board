@@ -1,0 +1,24 @@
+.icon-container {
+  display: block;
+  margin: 15px auto;
+
+  .side-bar-icon {
+    color: var(--semi-color-tertiary);
+    transition: all 0.1s;
+    font-size: 20px;
+    outline: none;
+
+    &:hover {
+      cursor: pointer;
+      color: var(--semi-color-tertiary-active);
+    }
+  }
+
+  .active-icon {
+    color: var(--semi-color-primary);
+
+    &:hover {
+      color: var(--semi-color-primary-hover);
+    }
+  }
+}

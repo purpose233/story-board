@@ -1,10 +1,13 @@
 import { makeAutoObservable } from 'mobx';
 import type { ViewElement } from '../editor/marks/base';
+import type { OperationType } from '../components/toolbar';
+import { MarkType } from '../typings/mark';
 
 export class EditorStore {
   currentElement: ViewElement | null = null;
   viewElements: ViewElement[] = [];
   elementMap: Map<string, ViewElement> = new Map();
+  currentOperationType: OperationType = MarkType.text;
 
   constructor() {
     makeAutoObservable(this);
@@ -37,6 +40,10 @@ export class EditorStore {
 
   updateViewElements(elements: ViewElement[]) {
     this.viewElements = elements;
+  }
+
+  updateCurrentOperationType(type: OperationType) {
+    this.currentOperationType = type;
   }
 }
 

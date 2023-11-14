@@ -6,7 +6,8 @@ import type { TextMark } from '../editor/marks/text';
 export enum MarkType {
   group = 'group',
   text = 'text',
-  rect = 'rect'
+  rect = 'rect',
+  circle = 'circle'
 }
 
 export type CommonMark = BaseMark | TextMark | GroupMark;

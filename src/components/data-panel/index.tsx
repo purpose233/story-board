@@ -6,7 +6,7 @@ import { v4 as uuid } from 'uuid';
 import type { DataField } from '../../typings';
 import { Preview } from './preview';
 
-import './index.css';
+import './index.less';
 
 const DataDescription = (props: { dataElement: DataElement; onDelete?: () => void }) => {
   const [preview, setPreview] = useState<boolean>(false);
@@ -17,14 +17,14 @@ const DataDescription = (props: { dataElement: DataElement; onDelete?: () => voi
         switch (field.type) {
           case 'number':
             return (
-              <div key={field.key}>
+              <div key={field.key} className="data-panel-entry">
                 <span className="data-panel-entry-label">{field.key}</span>
                 <span className="data-panel-entry-description">{`[${field.range[0]}, ${field.range[1]}]`}</span>
               </div>
             );
           case 'ordinal':
             return (
-              <div key={field.key}>
+              <div key={field.key} className="data-panel-entry">
                 <span className="data-panel-entry-label">{field.key}</span>
                 <span className="data-panel-entry-description">{`${field.count} values`}</span>
               </div>
@@ -61,14 +61,17 @@ const DataDescription = (props: { dataElement: DataElement; onDelete?: () => voi
 class DataElement {
   readonly id = uuid();
 
+  // eslint-disable-next-line
   values: any[];
   fields: DataField[];
 
+  // eslint-disable-next-line
   constructor(values: any[]) {
     this.values = values;
     this.fields = this.parseFields(values);
   }
 
+  // eslint-disable-next-line
   private parseFields(values: any[]): DataField[] {
     return Object.keys(values[0] ?? {}).map((field: string) => {
       const range = Array.from(new Set(values.map(value => value[field])));

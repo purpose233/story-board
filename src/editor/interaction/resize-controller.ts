@@ -71,8 +71,6 @@ export class ResizeController {
     this.resizeAnchorRightBottom = document.createElement('div');
     this.resizeAnchorRightBottom.classList.add('resize-anchor', 'resize-anchor-right-bottom');
 
-    this.container.appendChild(this.resizeContainer);
-
     // init events
     this.resizeAnchorLeftTop.addEventListener('mousedown', this.onDragStart(0b10100));
     this.resizeAnchorLeftBottom.addEventListener('mousedown', this.onDragStart(0b10010));
@@ -121,9 +119,9 @@ export class ResizeController {
   }
 
   release() {
-    this.container.removeChild(this.resizeContainer);
     this.editor.getContainer().removeEventListener('pointermove', this.onDragging);
     this.editor.getContainer().removeEventListener('pointerup', this.onDragEnd);
+    this.container.removeChild(this.resizeContainer);
   }
 
   private update(rect: IRect) {

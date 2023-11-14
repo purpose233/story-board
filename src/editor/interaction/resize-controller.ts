@@ -20,11 +20,10 @@ export class ResizeController {
   private resizeAnchorRightBottom!: HTMLDivElement;
 
   private rect: IRect = { x: 0, y: 0, width: 0, height: 0 };
-  private isResizing: boolean = false;
-  private isMoving: boolean = false;
+  private isDragging: boolean = false;
   private startRect: IRect = { x: 0, y: 0, width: 0, height: 0 };
   private startPoint: IPointLike = { x: 0, y: 0 };
-  // bits: left right top bottom
+  // bits: left right top bottom move
   private resizeMode: number = 0;
 
   // eslint-disable-next-line
@@ -75,16 +74,17 @@ export class ResizeController {
     this.container.appendChild(this.resizeContainer);
 
     // init events
-    this.resizeAnchorLeftTop.addEventListener('mousedown', this.onResizeStart(0b1010));
-    this.resizeAnchorLeftBottom.addEventListener('mousedown', this.onResizeStart(0b1001));
-    this.resizeAnchorRightTop.addEventListener('mousedown', this.onResizeStart(0b0110));
-    this.resizeAnchorRightBottom.addEventListener('mousedown', this.onResizeStart(0b0101));
-    this.resizeBorderLeft.addEventListener('mousedown', this.onResizeStart(0b1000));
-    this.resizeBorderRight.addEventListener('mousedown', this.onResizeStart(0b0100));
-    this.resizeBorderTop.addEventListener('mousedown', this.onResizeStart(0b0010));
-    this.resizeBorderBottom.addEventListener('mousedown', this.onResizeStart(0b0001));
-    this.editor.getContainer().addEventListener('pointermove', this.onResize);
-    this.editor.getContainer().addEventListener('pointerup', this.onResizeEnd);
+    this.resizeAnchorLeftTop.addEventListener('mousedown', this.onDragStart(0b10100));
+    this.resizeAnchorLeftBottom.addEventListener('mousedown', this.onDragStart(0b10010));
+    this.resizeAnchorRightTop.addEventListener('mousedown', this.onDragStart(0b01100));
+    this.resizeAnchorRightBottom.addEventListener('mousedown', this.onDragStart(0b01010));
+    this.resizeBorderLeft.addEventListener('mousedown', this.onDragStart(0b10000));
+    this.resizeBorderRight.addEventListener('mousedown', this.onDragStart(0b01000));
+    this.resizeBorderTop.addEventListener('mousedown', this.onDragStart(0b00100));
+    this.resizeBorderBottom.addEventListener('mousedown', this.onDragStart(0b00010));
+    this.resizeContainer.addEventListener('mousedown', this.onDragStart(0b00001));
+    this.editor.getContainer().addEventListener('pointermove', this.onDragging);
+    this.editor.getContainer().addEventListener('pointerup', this.onDragEnd);
   }
 
   render(rect: IRect) {
@@ -122,8 +122,8 @@ export class ResizeController {
 
   release() {
     this.container.removeChild(this.resizeContainer);
-    this.editor.getContainer().removeEventListener('pointermove', this.onResize);
-    this.editor.getContainer().removeEventListener('pointerup', this.onResizeEnd);
+    this.editor.getContainer().removeEventListener('pointermove', this.onDragging);
+    this.editor.getContainer().removeEventListener('pointerup', this.onDragEnd);
   }
 
   private update(rect: IRect) {
@@ -134,53 +134,61 @@ export class ResizeController {
     this.rect = Object.assign({}, rect);
   }
 
-  private onResizeStart = (resizeMode: number) => (event: MouseEvent) => {
-    this.isResizing = true;
+  private onDragStart = (resizeMode: number) => (event: MouseEvent) => {
+    this.isDragging = true;
     this.resizeMode = resizeMode;
     this.startPoint = { x: event.clientX, y: event.clientY };
     this.startRect = Object.assign({}, this.rect);
+    event.stopPropagation();
   };
 
-  private onResize = (event: MouseEvent) => {
-    if (this.isResizing && event) {
+  private onDragging = (event: MouseEvent) => {
+    if (this.isDragging && event) {
       const currentPoint = { x: event.clientX, y: event.clientY };
       const nextRect = this.computeRect(currentPoint);
       this.update(nextRect);
       this.resizeListeners.forEach(listener => listener.call(null, event, nextRect));
     }
+    event.stopPropagation();
   };
 
-  private onResizeEnd = (event: MouseEvent) => {
-    if (this.isResizing && event) {
+  private onDragEnd = (event: MouseEvent) => {
+    if (this.isDragging && event) {
       const currentPoint = { x: event.clientX, y: event.clientY };
       const nextRect = this.computeRect(currentPoint);
       this.update(nextRect);
       this.resizeEndListeners.forEach(listener => listener.call(null, event, nextRect));
-      this.isResizing = false;
+      this.isDragging = false;
     }
+    event.stopPropagation();
   };
 
   private computeRect(point: IPointLike) {
     const nextRect = Object.assign({}, this.startRect);
     // left
-    if (this.resizeMode & 0b1000) {
+    if (this.resizeMode & 0b10000) {
       nextRect.width = Math.max(this.startRect.width + (this.startPoint.x - point.x), minResizeWidth);
       nextRect.x = this.startRect.x + this.startRect.width - nextRect.width;
     }
     // right
-    if (this.resizeMode & 0b0100) {
+    if (this.resizeMode & 0b01000) {
       nextRect.x = this.startRect.x;
       nextRect.width = Math.max(this.startRect.width + (point.x - this.startPoint.x), minResizeWidth);
     }
     // top
-    if (this.resizeMode & 0b0010) {
+    if (this.resizeMode & 0b00100) {
       nextRect.height = Math.max(this.startRect.height + (this.startPoint.y - point.y), minResizeHeight);
       nextRect.y = this.startRect.y + this.startRect.height - nextRect.height;
     }
     // bottom
-    if (this.resizeMode & 0b0001) {
+    if (this.resizeMode & 0b00010) {
       nextRect.y = this.startRect.y;
       nextRect.height = Math.max(this.startRect.height + (point.y - this.startPoint.y), minResizeHeight);
+    }
+    // move
+    if (this.resizeMode & 0b00001) {
+      nextRect.x = this.startRect.x + (point.x - this.startPoint.x);
+      nextRect.y = this.startRect.y + (point.y - this.startPoint.y);
     }
     return nextRect;
   }

@@ -1,8 +1,7 @@
 import type { IPointLike } from '@visactor/vutils';
 import type { IRect } from '../../typings/common';
 import type { Editor } from '../editor';
-import { editorContainerId } from '../../config/editor';
-import type { InteractionEvent } from '@visactor/vgrammar';
+import { editorContainerId, minResizeHeight, minResizeWidth } from '../../config/editor';
 
 // TODO: maybe refactor with vgrammar mark
 export class ResizeController {
@@ -30,6 +29,8 @@ export class ResizeController {
 
   // eslint-disable-next-line
   private resizeListeners: ((event: any, nextRect: IRect) => void)[] = [];
+  // eslint-disable-next-line
+  private resizeEndListeners: ((event: any, nextRect: IRect) => void)[] = [];
 
   constructor(editor: Editor, container?: HTMLElement) {
     this.editor = editor;
@@ -48,6 +49,8 @@ export class ResizeController {
     //   <div className="resize-anchor resize-anchor-right-top"></div>
     //   <div className="resize-anchor resize-anchor-right-bottom"></div>
     // </div>
+
+    // init dom
     this.resizeContainer = document.createElement('div');
     this.resizeContainer.classList.add('resize-container');
 
@@ -71,12 +74,17 @@ export class ResizeController {
 
     this.container.appendChild(this.resizeContainer);
 
+    // init events
     this.resizeAnchorLeftTop.addEventListener('mousedown', this.onResizeStart(0b1010));
     this.resizeAnchorLeftBottom.addEventListener('mousedown', this.onResizeStart(0b1001));
     this.resizeAnchorRightTop.addEventListener('mousedown', this.onResizeStart(0b0110));
     this.resizeAnchorRightBottom.addEventListener('mousedown', this.onResizeStart(0b0101));
-    this.editor.addEventListener('pointermove', this.onResize);
-    this.editor.addEventListener('pointerup', this.onResizeEnd);
+    this.resizeBorderLeft.addEventListener('mousedown', this.onResizeStart(0b1000));
+    this.resizeBorderRight.addEventListener('mousedown', this.onResizeStart(0b0100));
+    this.resizeBorderTop.addEventListener('mousedown', this.onResizeStart(0b0010));
+    this.resizeBorderBottom.addEventListener('mousedown', this.onResizeStart(0b0001));
+    this.editor.getContainer().addEventListener('pointermove', this.onResize);
+    this.editor.getContainer().addEventListener('pointerup', this.onResizeEnd);
   }
 
   render(rect: IRect) {
@@ -102,10 +110,20 @@ export class ResizeController {
     this.resizeListeners = this.resizeListeners.filter(lastListener => lastListener !== listener);
   }
 
+  // eslint-disable-next-line
+  addResizeEndListener(listener: (event: any, nextRect: IRect) => void) {
+    this.resizeEndListeners = this.resizeEndListeners.concat(listener);
+  }
+
+  // eslint-disable-next-line
+  removeResizeEndListener(listener: (event: any, nextRect: IRect) => void) {
+    this.resizeEndListeners = this.resizeEndListeners.filter(lastListener => lastListener !== listener);
+  }
+
   release() {
     this.container.removeChild(this.resizeContainer);
-    this.editor.removeEventListener('pointermove', this.onResize);
-    this.editor.removeEventListener('pointerup', this.onResizeEnd);
+    this.editor.getContainer().removeEventListener('pointermove', this.onResize);
+    this.editor.getContainer().removeEventListener('pointerup', this.onResizeEnd);
   }
 
   private update(rect: IRect) {
@@ -123,9 +141,8 @@ export class ResizeController {
     this.startRect = Object.assign({}, this.rect);
   };
 
-  private onResize = (event?: InteractionEvent) => {
+  private onResize = (event: MouseEvent) => {
     if (this.isResizing && event) {
-      // @ts-ignore
       const currentPoint = { x: event.clientX, y: event.clientY };
       const nextRect = this.computeRect(currentPoint);
       this.update(nextRect);
@@ -133,9 +150,8 @@ export class ResizeController {
     }
   };
 
-  private onResizeEnd = (event?: InteractionEvent) => {
+  private onResizeEnd = (event: MouseEvent) => {
     if (this.isResizing && event) {
-      // @ts-ignore
       const currentPoint = { x: event.clientX, y: event.clientY };
       const nextRect = this.computeRect(currentPoint);
       this.update(nextRect);
@@ -145,14 +161,26 @@ export class ResizeController {
   };
 
   private computeRect(point: IPointLike) {
-    const nextRect = { x: 0, y: 0, width: 0, height: 0 };
+    const nextRect = Object.assign({}, this.startRect);
+    // left
+    if (this.resizeMode & 0b1000) {
+      nextRect.width = Math.max(this.startRect.width + (this.startPoint.x - point.x), minResizeWidth);
+      nextRect.x = this.startRect.x + this.startRect.width - nextRect.width;
+    }
+    // right
     if (this.resizeMode & 0b0100) {
       nextRect.x = this.startRect.x;
-      nextRect.width = this.startRect.width + (point.x - this.startPoint.x);
+      nextRect.width = Math.max(this.startRect.width + (point.x - this.startPoint.x), minResizeWidth);
     }
+    // top
+    if (this.resizeMode & 0b0010) {
+      nextRect.height = Math.max(this.startRect.height + (this.startPoint.y - point.y), minResizeHeight);
+      nextRect.y = this.startRect.y + this.startRect.height - nextRect.height;
+    }
+    // bottom
     if (this.resizeMode & 0b0001) {
       nextRect.y = this.startRect.y;
-      nextRect.height = this.startRect.height + (point.y - this.startPoint.y);
+      nextRect.height = Math.max(this.startRect.height + (point.y - this.startPoint.y), minResizeHeight);
     }
     return nextRect;
   }

@@ -44,11 +44,18 @@ export class Interaction {
       this.resizeController = new ResizeController(this.editor);
       this.resizeController.init();
       this.resizeController.render(rect);
-      this.resizeController.addResizeListener(this.onResize);
+      this.resizeController.addResizeEndListener(this.onResize);
     }
   };
 
   private onResize = (event: InteractionEvent | undefined, rect: IRect) => {
     // console.log(rect);
+    if (!this.editMark) {
+      return;
+    }
+    // this.editMark.updateVisuals('x', rect.x);
+    // this.editMark.updateVisuals('y', rect.y);
+    // this.editMark.updateVisuals('width', rect.width);
+    // this.editMark.updateVisuals('height', rect.height);
   };
 }

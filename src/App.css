@@ -41,6 +41,7 @@
   height: 100px;
   left: 100px;
   top: 100px;
+  cursor: move;
 }
 
 .resize-anchor {
@@ -53,18 +54,22 @@
 .resize-anchor-left-top {
   top: -5px;
   left: -5px;
+  cursor: nwse-resize;
 }
 .resize-anchor-left-bottom {
   left: -5px;
   bottom: -5px;
+  cursor: nesw-resize;
 }
 .resize-anchor-right-top {
   right: -5px;
   top: -5px;
+  cursor: nesw-resize;
 }
 .resize-anchor-right-bottom {
   right: -5px;
   bottom: -5px;
+  cursor: nwse-resize;
 }
 
 .resize-border {
@@ -74,19 +79,23 @@
   height: 100%;
   left: -0.5px;
   border-left: 1px solid #b0d9e7;
+  cursor: ew-resize;
 }
 .resize-border-right {
   height: 100%;
   right: -0.5px;
   border-right: 1px solid #b0d9e7;
+  cursor: ew-resize;
 }
 .resize-border-top {
   width: 100%;
   top: -0.5px;
   border-top: 1px solid #b0d9e7;
+  cursor: ns-resize;
 }
 .resize-border-bottom {
   width: 100%;
   bottom: -0.5px;
   border-bottom: 1px solid #b0d9e7;
+  cursor: ns-resize;
 }

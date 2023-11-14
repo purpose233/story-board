@@ -4,6 +4,7 @@ import { TextMark } from './marks/text';
 import { GroupMark } from './marks/group';
 import { type CommonMarkSpec, type CommonMark, MarkType } from '../typings/mark';
 import { Interaction } from './interaction/interaction';
+import { isString } from '@visactor/vutils';
 
 export interface EditorConfig {
   container: string | HTMLElement;
@@ -95,6 +96,10 @@ export class Editor {
 
   getRootMark() {
     return this.root;
+  }
+
+  getContainer(): HTMLElement {
+    return isString(this.config.container) ? document.getElementById(this.config.container)! : this.config.container;
   }
 
   addEventListener(type: string, handler: InteractionEventHandler) {

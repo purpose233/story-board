@@ -7,7 +7,7 @@ export class RectMark extends BaseMark {
   readonly type: 'rect';
   constructor(view: IView, visualConfig: RectMarkVisual) {
     super(view, visualConfig);
-    this.defaultVisual = elementVisualConfig.text;
+    this.defaultVisual = elementVisualConfig.rect;
     this.type = 'rect';
   }
 }

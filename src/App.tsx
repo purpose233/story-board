@@ -1,7 +1,7 @@
 import React from 'react';
 import { Editor } from './view/editor';
 
-import './App.css';
+import './App.less';
 
 function App() {
   return <Editor />;

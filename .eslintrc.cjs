@@ -11,6 +11,7 @@ module.exports = {
   parser: '@typescript-eslint/parser',
   plugins: ['react-refresh'],
   rules: {
+    '@typescript-eslint/ban-ts-comment': 'off',
     // "prettier/prettier": ["error"],
     // 强制使用 Unix 换行符： \n
     'linebreak-style': ['error', 'unix'],

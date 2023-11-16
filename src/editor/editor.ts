@@ -1,7 +1,11 @@
-import { View, type IView } from '@visactor/vgrammar';
+import type { InteractionEventHandler, IView } from '@visactor/vgrammar';
+import { View } from '@visactor/vgrammar';
 import { TextMark } from './marks/text';
 import { GroupMark } from './marks/group';
 import { type CommonMarkSpec, type CommonMark, MarkType } from '../typings/mark';
+import { Interaction } from './interaction/interaction';
+import { isString } from '@visactor/vutils';
+import { RectMark } from './marks/rect';
 
 export interface EditorConfig {
   container: string | HTMLElement;
@@ -13,6 +17,8 @@ export const createMarkByType = (type: string, view: IView, config: CommonMarkSp
       return new TextMark(view, config);
     case MarkType.group:
       return new GroupMark(view, config);
+    case MarkType.rect:
+      return new RectMark(view, config);
     default:
       throw `mark type ${type} 不存在`;
   }
@@ -21,11 +27,14 @@ export class Editor {
   private config: EditorConfig;
   private view!: IView;
   private layers: never[];
+  private interaction: Interaction;
   private elements: CommonMark[];
   private root: GroupMark | null;
   private markMap: Map<string, CommonMark>;
+
   constructor(config: EditorConfig) {
     this.config = config;
+    this.interaction = new Interaction(this);
     this.layers = [];
     this.elements = [];
     this.markMap = new Map();
@@ -41,9 +50,9 @@ export class Editor {
       logLevel: 3,
       ...otherConfig
     });
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     window.view = this.view;
+    this.interaction.init();
     this.root = new GroupMark(this.view);
     this.markMap.set(this.root.id, this.root);
   }
@@ -73,7 +82,7 @@ export class Editor {
     if (mark) {
       return mark;
     }
-    throw Error('mark 不存在');
+    return null;
   }
 
   getViewElementById(id: string) {
@@ -81,7 +90,7 @@ export class Editor {
     if (mark) {
       return mark.getViewElement();
     }
-    throw Error('mark 不存在');
+    return null;
   }
 
   getViewElements() {
@@ -92,8 +101,16 @@ export class Editor {
     return this.root;
   }
 
-  release() {
-    this.view.release();
+  getContainer(): HTMLElement {
+    return isString(this.config.container) ? document.getElementById(this.config.container)! : this.config.container;
+  }
+
+  addEventListener(type: string, handler: InteractionEventHandler) {
+    this.view.addEventListener(type, handler);
+  }
+
+  removeEventListener(type: string, handler: InteractionEventHandler) {
+    this.view.removeEventListener(type, handler);
   }
 
   render() {
@@ -101,5 +118,9 @@ export class Editor {
     const rootGroup = this.view.group(this.view.rootMark).encode(this.root!.getVisuals());
     this.elements.forEach(element => element.compile(rootGroup));
     this.view.runAsync();
+  }
+
+  release() {
+    this.view.release();
   }
 }

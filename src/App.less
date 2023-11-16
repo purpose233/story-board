@@ -1,0 +1,101 @@
+#root {
+  /* max-width: 1280px; */
+  width: 100vw;
+  height: 100vh;
+  margin: 0 auto;
+  /* padding: 2rem; */
+  text-align: center;
+}
+
+.logo {
+  height: 6em;
+  padding: 1.5em;
+  will-change: filter;
+  transition: filter 300ms;
+}
+.logo:hover {
+  filter: drop-shadow(0 0 2em #646cffaa);
+}
+.logo.react:hover {
+  filter: drop-shadow(0 0 2em #61dafbaa);
+}
+
+@keyframes logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  a:nth-of-type(2) .logo {
+    animation: logo-spin infinite 20s linear;
+  }
+}
+
+.resize-container {
+  position: absolute;
+  width: 200px;
+  height: 100px;
+  left: 100px;
+  top: 100px;
+  cursor: move;
+}
+
+.resize-anchor {
+  position: absolute;
+  border: 1px solid #b0d9e7;
+  width: 8px;
+  height: 8px;
+  background: white;
+}
+.resize-anchor-left-top {
+  top: -5px;
+  left: -5px;
+  cursor: nwse-resize;
+}
+.resize-anchor-left-bottom {
+  left: -5px;
+  bottom: -5px;
+  cursor: nesw-resize;
+}
+.resize-anchor-right-top {
+  right: -5px;
+  top: -5px;
+  cursor: nesw-resize;
+}
+.resize-anchor-right-bottom {
+  right: -5px;
+  bottom: -5px;
+  cursor: nwse-resize;
+}
+
+.resize-border {
+  position: absolute;
+}
+.resize-border-left {
+  height: 100%;
+  left: -0.5px;
+  border-left: 1px solid #b0d9e7;
+  cursor: ew-resize;
+}
+.resize-border-right {
+  height: 100%;
+  right: -0.5px;
+  border-right: 1px solid #b0d9e7;
+  cursor: ew-resize;
+}
+.resize-border-top {
+  width: 100%;
+  top: -0.5px;
+  border-top: 1px solid #b0d9e7;
+  cursor: ns-resize;
+}
+.resize-border-bottom {
+  width: 100%;
+  bottom: -0.5px;
+  border-bottom: 1px solid #b0d9e7;
+  cursor: ns-resize;
+}

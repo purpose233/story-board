@@ -1,6 +1,6 @@
-import type { GroupMarkVisual, RectMarkVisual, TextMarkVisual } from './mark';
+import type { GroupMarkVisual, RectMarkVisual, TextMarkVisual, CircleMarkVisual } from './mark';
 
-export type IVisualConfig = IVisualTextConfig | IVisualGroupConfig | IVisualRectConfig;
+export type IVisualConfig = IVisualTextConfig | IVisualGroupConfig | IVisualRectConfig | IVisualCircleConfig;
 
 export interface IVisualTextConfig extends IVisualBaseConfig {
   channel: keyof GroupMarkVisual;
@@ -10,6 +10,10 @@ export interface IVisualGroupConfig extends IVisualBaseConfig {
 }
 export interface IVisualRectConfig extends IVisualBaseConfig {
   channel: keyof RectMarkVisual;
+}
+
+export interface IVisualCircleConfig extends IVisualBaseConfig {
+  channel: keyof CircleMarkVisual;
 }
 
 export interface IVisualBaseConfig {
@@ -22,7 +26,7 @@ export interface IVisualBaseConfig {
 export type OrdinalField = {
   key: string;
   type: 'ordinal';
-  range: any[];
+  range: unknown[];
   count: number;
 };
 

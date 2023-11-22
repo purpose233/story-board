@@ -17,6 +17,7 @@ export type CommonMarkVisual = TextMarkVisual | GroupMarkVisual | RectMarkVisual
 export type TextMarkVisual = GenerateEncoderSpec<BasicEncoderSpecMap[MarkType.text]>;
 export type GroupMarkVisual = GenerateEncoderSpec<BasicEncoderSpecMap[MarkType.group]>;
 export type RectMarkVisual = GenerateEncoderSpec<BasicEncoderSpecMap[MarkType.rect]>;
+export type CircleMarkVisual = GenerateEncoderSpec<BasicEncoderSpecMap[MarkType.circle]>;
 
 type CommonKeys<T> = T extends unknown ? keyof T : never;
-export type MarkVisualKeys = CommonKeys<TextMarkVisual | GroupMarkVisual | RectMarkVisual>;
+export type MarkVisualKeys = CommonKeys<TextMarkVisual | GroupMarkVisual | RectMarkVisual | CircleMarkVisual>;

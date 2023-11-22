@@ -51,6 +51,10 @@ export abstract class BaseMark {
     this.group = group;
   }
 
+  removeGroup() {
+    this.group?.removeElement(this);
+  }
+
   updateVisuals(channel: keyof CommonMarkVisual, config: CommonMarkVisual) {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (this.visuals as any)[channel] = config;
@@ -65,6 +69,10 @@ export abstract class BaseMark {
       return this;
     }
     return null;
+  }
+
+  getIndex(): number {
+    return this.group?.getIndexByElementId(this.id) ?? -1;
   }
 
   getViewElementById(id: string): ViewElement | null {
@@ -100,5 +108,9 @@ export abstract class BaseMark {
     if (this.mark) {
       this.view.removeGrammar(this.mark);
     }
+  }
+
+  destory() {
+    this.removeGroup();
   }
 }

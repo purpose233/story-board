@@ -1,0 +1,42 @@
+.layer-tree {
+  text-align: left;
+
+  .semi-tree-option {
+    background: transparent;
+
+    &:hover {
+      background-color: rgba(var(--semi-blue-0), 0.5);
+    }
+
+    &:hover {
+      .delete-icon {
+        visibility: visible;
+        opacity: 1;
+      }
+    }
+
+    &.group-selected {
+      background: rgba(var(--semi-blue-0), 1) !important;
+    }
+
+    &.leaf-selected {
+      background: rgba(var(--semi-blue-0), 0.5) !important;
+    }
+  }
+
+  .tree-item {
+    box-sizing: border-box;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding-right: 4px;
+
+    .delete-icon {
+      visibility: hidden;
+      opacity: 0;
+      transition: all linear 0.1s;
+      color: var(--semi-color-danger);
+    }
+  }
+}

@@ -27,6 +27,13 @@ const rectVisualConfig: IVisualConfig[] = merge(basicVisualConfig, [
   { channel: 'height', type: 'number', default: 60 }
 ]);
 
+const circleVisualConfig: IVisualConfig[] = merge(basicVisualConfig, [
+  { channel: 'radius', type: 'number', default: 40 },
+  { channel: 'fill', type: 'color', default: 'rgb(201, 111, 209)' },
+  { channel: 'stroke', type: 'color', default: 'rgb(201, 111, 209)' },
+  { channel: 'fillOpacity', type: 'number', default: 0.5, options: { min: 0, max: 1, step: 0.1 } }
+]);
+
 const groupVisualConfig: IVisualConfig[] = merge(basicVisualConfig, [
   { channel: 'fillOpacity', type: 'number', default: 0.1, options: { min: 0, max: 1, step: 0.1 } },
   { channel: 'fill', type: 'color', default: 'red' },
@@ -38,5 +45,6 @@ const groupVisualConfig: IVisualConfig[] = merge(basicVisualConfig, [
 export const elementVisualConfig: Record<string, IVisualConfig[]> = {
   text: textVisualConfig,
   rect: rectVisualConfig,
-  group: groupVisualConfig
+  group: groupVisualConfig,
+  circle: circleVisualConfig
 };

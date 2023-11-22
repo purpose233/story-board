@@ -51,9 +51,11 @@ export const Playground = observer(({ editorRef }: Props) => {
       const currentElement = editorStore.currentElement;
       if (currentElement?.type === 'group') {
         groupId = currentElement.id;
+      } else if (currentElement?.id) {
+        groupId = editor.getElementById(currentElement.id)?.group?.id;
       }
       const id = editor.createElement(type, { ...defaultVisualConfig, x, y }, groupId);
-      editorStore.addElement(editor.getViewElementById(id));
+      editorStore.addElement(editor.getViewElementById(id)!);
       editorStore.setCurrentElement(id);
       editorStore.updateViewElements(editor.getViewElements());
       editor.render();
@@ -69,7 +71,7 @@ export const Playground = observer(({ editorRef }: Props) => {
   };
 
   return (
-    <div style={{ width: '100%', height: '100%' }} onClick={onClick}>
+    <div style={{ width: '100%', height: '100%', background: '#eee' }} onClick={e => onClick(e)}>
       <div id={editorContainerId} style={{ position: 'relative', width: '100%', height: '100%' }}></div>
     </div>
   );

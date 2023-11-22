@@ -6,6 +6,7 @@ import { type CommonMarkSpec, type CommonMark, MarkType } from '../typings/mark'
 import { Interaction } from './interaction/interaction';
 import { isString } from '@visactor/vutils';
 import { RectMark } from './marks/rect';
+import { CircleMark } from './marks/circle';
 
 export interface EditorConfig {
   container: string | HTMLElement;
@@ -19,6 +20,8 @@ export const createMarkByType = (type: string, view: IView, config: CommonMarkSp
       return new GroupMark(view, config);
     case MarkType.rect:
       return new RectMark(view, config);
+    case MarkType.circle:
+      return new CircleMark(view, config);
     default:
       throw `mark type ${type} 不存在`;
   }
@@ -28,7 +31,6 @@ export class Editor {
   private view!: IView;
   private layers: never[];
   private interaction: Interaction;
-  private elements: CommonMark[];
   private root: GroupMark | null;
   private markMap: Map<string, CommonMark>;
 
@@ -36,7 +38,6 @@ export class Editor {
     this.config = config;
     this.interaction = new Interaction(this);
     this.layers = [];
-    this.elements = [];
     this.markMap = new Map();
     this.root = null;
   }
@@ -71,10 +72,29 @@ export class Editor {
   }
 
   add(element: CommonMark, groupMark = this.root!) {
-    if (groupMark.id === this.root!.id) {
-      this.elements.push(element);
-    }
     groupMark.addElement(element);
+  }
+
+  move(originMarkId: string, groupId: string = this.root!.id, position = 0) {
+    const fromMark = this.getElementById(originMarkId)!;
+    const groupMark = this.getElementById(groupId) as GroupMark;
+    // if elements are in the same group, swap them
+    if (fromMark?.group === groupMark) {
+      groupMark.swapElement(fromMark.id, groupMark.getElementByIndex(position)!.id);
+      return;
+    }
+    // otherwise remove group first
+    fromMark.removeGroup();
+    groupMark.addElement(fromMark, position);
+  }
+
+  delete(id: string) {
+    const mark = this.markMap.get(id);
+    if (!mark) {
+      return;
+    }
+    this.markMap.delete(id);
+    mark.destory();
   }
 
   getElementById(id: string) {
@@ -94,7 +114,7 @@ export class Editor {
   }
 
   getViewElements() {
-    return this.elements.map(el => el.getViewElement());
+    return this.getElements().map(el => el.getViewElement());
   }
 
   getRootMark() {
@@ -113,10 +133,14 @@ export class Editor {
     this.view.removeEventListener(type, handler);
   }
 
+  getElements() {
+    return this.root!.marks;
+  }
+
   render() {
     this.view.removeAllGrammars();
     const rootGroup = this.view.group(this.view.rootMark).encode(this.root!.getVisuals());
-    this.elements.forEach(element => element.compile(rootGroup));
+    this.getElements().forEach(element => element.compile(rootGroup));
     this.view.runAsync();
   }
 

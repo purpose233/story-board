@@ -29,7 +29,7 @@ export const Editor = () => {
         </Sider>
         <Sider style={{ width: 240 }}>
           <DataPanel />
-          <LayerPanel />
+          <LayerPanel editorRef={editorRef} />
         </Sider>
         <Content>
           <Playground editorRef={editorRef} />

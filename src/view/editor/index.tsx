@@ -1,11 +1,11 @@
 import { useRef } from 'react';
 import { Layout } from '@douyinfe/semi-ui';
 import type { Editor as MarksEditor } from '../../editor/editor';
-import { Toolbar } from '../../components/toolbar';
-import { DataPanel } from '../../components/data-panel';
-import { LayerPanel } from '../../components/layer-panel';
-import { ConfigPanel } from '../../components/config-panel';
-import { Playground } from '../../components/playground';
+import { Toolbar } from '../toolbar';
+import { DataPanel } from '../data-panel';
+import { LayerPanel } from '../layer-panel';
+import { ConfigPanel } from '../config-panel';
+import { Playground } from '../playground';
 
 import './index.less';
 

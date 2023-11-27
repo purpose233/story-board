@@ -2,11 +2,26 @@ import type { InteractionEventHandler, IView } from '@visactor/vgrammar';
 import { View } from '@visactor/vgrammar';
 import { TextMark } from './marks/text';
 import { GroupMark } from './marks/group';
+import type {
+  ArcMarkVisual,
+  AreaMarkVisual,
+  GroupMarkVisual,
+  LineMarkVisual,
+  PolygonMarkVisual,
+  RectMarkVisual,
+  ShapeMarkVisual
+} from '../typings/mark';
 import { type CommonMarkSpec, type CommonMark, MarkType } from '../typings/mark';
 import { Interaction } from './interaction/interaction';
 import { isString } from '@visactor/vutils';
 import { RectMark } from './marks/rect';
 import { CircleMark } from './marks/circle';
+import { ArcMark } from './marks/arc';
+import { AreaMark } from './marks/area';
+import { ShapeMark } from './marks/shape';
+import { SymbolMark } from './marks/symbol';
+import { LineMark } from './marks/line';
+import { PolygonlMark } from './marks/polygon';
 
 export interface EditorConfig {
   container: string | HTMLElement;
@@ -17,11 +32,23 @@ export const createMarkByType = (type: string, view: IView, config: CommonMarkSp
     case MarkType.text:
       return new TextMark(view, config);
     case MarkType.group:
-      return new GroupMark(view, config);
+      return new GroupMark(view, config as GroupMarkVisual);
     case MarkType.rect:
-      return new RectMark(view, config);
+      return new RectMark(view, config as RectMarkVisual);
     case MarkType.circle:
       return new CircleMark(view, config);
+    case MarkType.arc:
+      return new ArcMark(view, config as ArcMarkVisual);
+    case MarkType.line:
+      return new LineMark(view, config as LineMarkVisual);
+    case MarkType.area:
+      return new AreaMark(view, config as AreaMarkVisual);
+    case MarkType.shape:
+      return new ShapeMark(view, config as ShapeMarkVisual);
+    case MarkType.symbol:
+      return new SymbolMark(view, config as ShapeMarkVisual);
+    case MarkType.polygon:
+      return new PolygonlMark(view, config as PolygonMarkVisual);
     default:
       throw `mark type ${type} 不存在`;
   }

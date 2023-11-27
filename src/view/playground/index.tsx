@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, type RefObject } from 'react';
 import { observer } from 'mobx-react';
 import { type Editor, Editor as MarksEditor } from '../../editor/editor';
 import { useEditorStore } from '../../store/element';
-import { elementVisualConfig } from '../../config/visual';
+import { elementVisualConfig, getDefaultVisual } from '../../config/visual';
 import type { CommonMarkVisual } from '../../typings/mark';
 import { editorContainerId } from '../../config/editor';
 import { CommonOperateType } from '../../typings/editor';
@@ -40,12 +40,8 @@ export const Playground = observer(({ editorRef }: Props) => {
       const x = originEvent.offsetX;
       const y = originEvent.offsetY;
       const type = editorStore.currentOperationType as string;
-      const defaultVisualConfigList = elementVisualConfig[type];
-      const defaultVisualConfig: CommonMarkVisual = defaultVisualConfigList.reduce((acc, cur) => {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (acc as any)[cur.channel] = cur.default;
-        return acc;
-      }, {} as CommonMarkVisual);
+      // const defaultVisualConfigList = elementVisualConfig[type];
+      const defaultVisualConfig: CommonMarkVisual = getDefaultVisual(type);
       const editor = editorRef.current!;
       let groupId;
       const currentElement = editorStore.currentElement;

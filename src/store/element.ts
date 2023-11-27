@@ -1,7 +1,7 @@
 import { makeAutoObservable } from 'mobx';
 import type { ViewElement } from '../editor/marks/base';
-import type { OperationType } from '../components/toolbar';
 import { MarkType } from '../typings/mark';
+import type { OperationType } from '../typings/editor';
 
 export class EditorStore {
   currentElement: ViewElement | null = null;

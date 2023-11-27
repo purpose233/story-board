@@ -1,6 +1,13 @@
 import { Icon } from './components/Icon';
 import { faCircle, faSquare, faObjectUngroup, faHand } from '@fortawesome/free-regular-svg-icons';
-import { faFont } from '@fortawesome/free-solid-svg-icons';
+import {
+  faChartArea,
+  faChartLine,
+  faChartPie,
+  faDiamond,
+  faDrawPolygon,
+  faFont
+} from '@fortawesome/free-solid-svg-icons';
 import { observer } from 'mobx-react';
 import { useEditorStore } from '../../store/element';
 import { type RefObject } from 'react';
@@ -49,6 +56,36 @@ export const Toolbar = observer(({ editorRef }: Props) => {
         icon={faFont}
         tip="text"
         onClick={() => editorStore.updateCurrentOperationType(MarkType.text)}
+      />
+      <Icon
+        active={currentOperationType === MarkType.arc}
+        icon={faChartPie}
+        tip="arc"
+        onClick={() => editorStore.updateCurrentOperationType(MarkType.arc)}
+      />
+      <Icon
+        active={currentOperationType === MarkType.symbol}
+        icon={faDiamond}
+        tip="symbol"
+        onClick={() => editorStore.updateCurrentOperationType(MarkType.symbol)}
+      />
+      <Icon
+        active={currentOperationType === MarkType.polygon}
+        icon={faDrawPolygon}
+        tip="polygon"
+        onClick={() => editorStore.updateCurrentOperationType(MarkType.polygon)}
+      />
+      <Icon
+        active={currentOperationType === MarkType.area}
+        icon={faChartArea}
+        tip="area"
+        onClick={() => editorStore.updateCurrentOperationType(MarkType.area)}
+      />
+      <Icon
+        active={currentOperationType === MarkType.line}
+        icon={faChartLine}
+        tip="line"
+        onClick={() => editorStore.updateCurrentOperationType(MarkType.line)}
       />
     </div>
   );

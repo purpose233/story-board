@@ -1,0 +1,21 @@
+.config-panel-entry {
+  display: flex;
+  margin-bottom: 10px;
+}
+
+.config-panel-entry-label {
+  display: flex;
+  align-items: center;
+  justify-content: end;
+  width: 80px;
+  margin-right: 6px;
+  flex-shrink: 0;
+}
+
+.config-panel-entry-item {
+  flex: 1;
+
+  & > :first-child {
+    width: 100%;
+  }
+}

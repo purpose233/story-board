@@ -2,12 +2,18 @@ import { makeAutoObservable } from 'mobx';
 import type { ViewElement } from '../editor/marks/base';
 import { MarkType } from '../typings/mark';
 import type { OperationType } from '../typings/editor';
+import type { DataElement } from '../view/data-panel';
+import type { ScaleViewElement } from '../editor/scales/base';
 
 export class EditorStore {
   currentElement: ViewElement | null = null;
   viewElements: ViewElement[] = [];
+  // created scales
+  viewScales: ScaleViewElement[] = [];
   elementMap: Map<string, ViewElement> = new Map();
-  currentOperationType: OperationType = MarkType.text;
+  currentOperationType: OperationType = MarkType.symbol;
+  dataElements: DataElement[] = [];
+  currentDataElement: DataElement | null = null;
 
   constructor() {
     makeAutoObservable(this);
@@ -42,8 +48,20 @@ export class EditorStore {
     this.viewElements = elements;
   }
 
+  updateViewScales(scales: ScaleViewElement[]) {
+    this.viewScales = scales;
+  }
+
   updateCurrentOperationType(type: OperationType) {
     this.currentOperationType = type;
+  }
+
+  updateDataElements(dataElements: DataElement[]) {
+    this.dataElements = dataElements;
+  }
+
+  updateCurrentDataElement(dataElement: DataElement) {
+    this.currentDataElement = dataElement;
   }
 }
 

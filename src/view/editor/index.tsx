@@ -25,10 +25,11 @@ export const Editor = () => {
       <Header style={commonStyle}>Story Board</Header>
       <Layout>
         <Sider style={{ width: '40px', background: 'var(--semi-color-bg-1)' }}>
+          {/* TODO: need a more generalized way to use editor globally */}
           <Toolbar editorRef={editorRef} />
         </Sider>
         <Sider style={{ width: 240 }}>
-          <DataPanel />
+          <DataPanel editorRef={editorRef} />
           <LayerPanel editorRef={editorRef} />
         </Sider>
         <Content>

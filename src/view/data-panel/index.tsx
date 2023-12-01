@@ -1,12 +1,16 @@
-import { Fragment, useState } from 'react';
+import type { RefObject } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import { IconClose, IconDelete, IconUpload } from '@douyinfe/semi-icons';
-import { Button, Card, Divider, Modal, Upload } from '@douyinfe/semi-ui';
+import { Button, Card, Divider, Upload } from '@douyinfe/semi-ui';
 import { DataSet, DataView, csvParser } from '@visactor/vdataset';
 import { v4 as uuid } from 'uuid';
 import type { DataField } from '../../typings';
 import { Preview } from './preview';
 
 import './index.less';
+import { useEditorStore } from '../../store/element';
+import type { Editor } from '../../editor/editor';
+import { observer } from 'mobx-react';
 
 const DataDescription = (props: { dataElement: DataElement; onDelete?: () => void }) => {
   const [preview, setPreview] = useState<boolean>(false);
@@ -58,8 +62,8 @@ const DataDescription = (props: { dataElement: DataElement; onDelete?: () => voi
   );
 };
 
-class DataElement {
-  readonly id = uuid();
+export class DataElement {
+  id = uuid();
 
   // eslint-disable-next-line
   values: any[];
@@ -69,6 +73,10 @@ class DataElement {
   constructor(values: any[]) {
     this.values = values;
     this.fields = this.parseFields(values);
+  }
+
+  updateId(id: string) {
+    this.id = id;
   }
 
   // eslint-disable-next-line
@@ -156,8 +164,32 @@ const mockData = [
   }
 ];
 
-export const DataPanel = () => {
-  const [dataElements, setDataElements] = useState<DataElement[]>([new DataElement(mockData)]);
+interface Props {
+  editorRef: RefObject<Editor>;
+}
+
+export const DataPanel = observer(({ editorRef }: Props) => {
+  const [dataElements, setDataElements] = useState<DataElement[]>([]);
+  const editorStore = useEditorStore();
+  useEffect(() => {
+    // FIXME: temp hack, need a more generalized way to use editor globally
+    setTimeout(() => {
+      if (!editorRef.current) {
+        return;
+      }
+      const editor = editorRef.current;
+      const dataElement = new DataElement(mockData);
+      const { values } = dataElement;
+      const data = editor!.createData([...values]);
+      dataElement.updateId(data.id);
+      setDataElements([dataElement]);
+      editorStore.updateCurrentDataElement(dataElement);
+    }, 0);
+  }, [editorRef, editorStore]);
+
+  useEffect(() => {
+    editorStore.updateDataElements(dataElements);
+  }, [dataElements, editorStore]);
 
   return (
     <Card title="Data Panel" style={{ width: '100%', height: 300, overflowY: 'scroll' }}>
@@ -188,4 +220,4 @@ export const DataPanel = () => {
       ))}
     </Card>
   );
-};
+});

@@ -1,3 +1,4 @@
+import type { ScaleValueSpec } from '../editor/scales/base';
 import type {
   GroupMarkVisual,
   RectMarkVisual,
@@ -67,6 +68,7 @@ export interface IVisualBaseConfig {
   options?: any;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   handler?: (value: any) => any;
+  defaultRange?: ScaleValueSpec;
 }
 
 export type OrdinalField = {

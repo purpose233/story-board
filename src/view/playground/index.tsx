@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, type RefObject } from 'react';
 import { observer } from 'mobx-react';
 import { type Editor, Editor as MarksEditor } from '../../editor/editor';
 import { useEditorStore } from '../../store/element';
-import { elementVisualConfig, getDefaultVisual } from '../../config/visual';
+import { getDefaultVisual } from '../../config/visual';
 import type { CommonMarkVisual } from '../../typings/mark';
 import { editorContainerId } from '../../config/editor';
 import { CommonOperateType } from '../../typings/editor';

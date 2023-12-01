@@ -4,11 +4,13 @@ import { useEditorStore, type EditorStore } from '../../store/element';
 import { elementVisualConfig } from '../../config/visual';
 import { type RefObject, useEffect, useState } from 'react';
 
-import './index.css';
 import type { Editor } from '../../editor/editor';
 import type { CommonMarkVisual } from '../../typings/mark';
-import { NumberInput } from './components/NumberInput';
+import { AngleInput } from './components/AngleInput';
 import { Points } from './components/Points';
+import { ConfigWrapper } from './components/ConfigWrapper';
+
+import './index.less';
 
 const generateVisuals = (
   editorStore: EditorStore,
@@ -35,7 +37,7 @@ const generateVisuals = (
 
         const currentElement = editor.getElementById(currentViewElement.id);
         if (currentElement) {
-          currentElement.updateVisuals(visual.channel as keyof CommonMarkVisual, value, visual.type);
+          currentElement.updateVisuals(visual.channel as keyof CommonMarkVisual, value);
           editorStore.updateElement(currentElement.getViewElement());
           editor.render();
         }
@@ -45,84 +47,53 @@ const generateVisuals = (
       switch (visual.type) {
         case 'string':
           return (
-            <div className="config-panel-entry" key={visual.channel}>
-              <span className="config-panel-entry-label">{visual.channel}:</span>
-              <div className="config-panel-entry-item">
-                <Input
-                  // defaultValue={value}
-                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                  value={value}
-                  onChange={onChange}
-                />
-              </div>
-            </div>
+            <ConfigWrapper editorRef={editorRef} channel={visual.channel}>
+              <Input value={value} onChange={onChange} />
+            </ConfigWrapper>
           );
         case 'number':
           return (
-            <div className="config-panel-entry" key={visual.channel}>
-              <span className="config-panel-entry-label">{visual.channel}:</span>
+            <ConfigWrapper editorRef={editorRef} channel={visual.channel}>
               <InputNumber
-                // defaultValue={value}
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 value={value}
                 onChange={onChange}
                 step={visual?.options?.step}
                 max={visual?.options?.max}
                 min={visual?.options?.min}
               />
-            </div>
+            </ConfigWrapper>
           );
         case 'angle':
-          return <NumberInput key={visual.channel} config={visual} value={value} onChange={onChange}></NumberInput>;
+          return (
+            <ConfigWrapper editorRef={editorRef} channel={visual.channel}>
+              <AngleInput key={visual.channel} config={visual} value={value} onChange={onChange}></AngleInput>
+            </ConfigWrapper>
+          );
         case 'points':
           return <Points key={visual.channel} config={visual} value={value} onChange={onChange}></Points>;
         case 'color':
           return (
-            <div className="config-panel-entry" key={visual.channel}>
-              <span className="config-panel-entry-label">{visual.channel}:</span>
-              <div className="config-panel-entry-item">
-                <Input
-                  // defaultValue={value}
-                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                  value={value}
-                  onChange={onChange}
-                />
-              </div>
-            </div>
+            <ConfigWrapper editorRef={editorRef} channel={visual.channel}>
+              <Input value={value} onChange={onChange} />
+            </ConfigWrapper>
           );
         case 'boolean':
           return (
-            <div className="config-panel-entry" key={visual.channel}>
-              <span className="config-panel-entry-label">{visual.channel}:</span>
-              <div className="config-panel-entry-item">
-                <Switch
-                  // defaultChecked={value}
-                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                  checked={value}
-                  onChange={onChange}
-                />
-              </div>
-            </div>
+            <ConfigWrapper editorRef={editorRef} channel={visual.channel}>
+              <Switch checked={value} onChange={onChange} />
+            </ConfigWrapper>
           );
         case 'select':
           return (
-            <div className="config-panel-entry" key={visual.channel}>
-              <span className="config-panel-entry-label">{visual.channel}:</span>
-              <div className="config-panel-entry-item">
-                <Select
-                  // defaultChecked={value}
-                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                  value={value}
-                  onChange={onChange}
-                >
-                  {visual.options?.options?.map(({ label, value }: { label: string; value: string }) => (
-                    <Select.Option key={value} value={value}>
-                      {label}
-                    </Select.Option>
-                  ))}
-                </Select>
-              </div>
-            </div>
+            <ConfigWrapper editorRef={editorRef} channel={visual.channel}>
+              <Select value={value} onChange={onChange}>
+                {visual.options?.options?.map(({ label, value }: { label: string; value: string }) => (
+                  <Select.Option key={value} value={value}>
+                    {label}
+                  </Select.Option>
+                ))}
+              </Select>
+            </ConfigWrapper>
           );
       }
       return <div style={{ color: 'red' }}>control type [{visual.type}] not exist</div>;
@@ -148,7 +119,7 @@ export const ConfigPanel = observer(({ editorRef }: { editorRef: RefObject<Edito
   }, [editorStore.currentElement]);
 
   return (
-    <Card title="Config Panel" style={{ width: '100%', height: '100%' }}>
+    <Card className="config-panel" title="Config Panel" style={{ width: '100%', height: '100%' }}>
       {editorStore.currentElement ? generateVisuals(editorStore, editorRef, formValues, setFormValues) : null}
       {/* {currentElement ? generateVisuals(currentElement, editorStore) : null} */}
     </Card>

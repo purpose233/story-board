@@ -85,5 +85,6 @@ export class GroupMark extends BaseMark {
   compile(group: IGroupMark) {
     const curGroup = this.view.group(group).encode(this.getVisuals());
     this.marks.forEach(mark => mark.compile(curGroup));
+    return curGroup;
   }
 }

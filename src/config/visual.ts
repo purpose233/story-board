@@ -32,12 +32,31 @@ const types = [
   'wye',
   'rect'
 ];
+
+const defaultRange = {
+  // @ts-ignore
+  width: (scale, params) => {
+    return [0, params.viewBox.width()];
+  },
+  // @ts-ignore
+  height: (scale, params) => {
+    return [0, params.viewBox.height()];
+  },
+  color: ['lightblue', 'lightgreen', 'lightred', 'lightorange'],
+  angle: [0, 360],
+  opacity: [0.1, 1]
+};
 const symbolTypeOptions = types.map(type => ({ value: type, label: type }));
 
 export const basicVisualConfig: IVisualConfig[] = [
-  { channel: 'x', type: 'number', default: 20 },
-  { channel: 'y', type: 'number', default: 20 },
-  { channel: 'fill', type: 'color', default: '#eff7ff' }
+  { channel: 'x', type: 'number', default: 20, defaultRange: defaultRange.width },
+  { channel: 'y', type: 'number', default: 20, defaultRange: defaultRange.height },
+  {
+    channel: 'fill',
+    type: 'color',
+    default: '#eff7ff',
+    defaultRange: defaultRange.color
+  }
 ];
 
 const textVisualConfig: IVisualConfig[] = merge(basicVisualConfig, [
@@ -73,7 +92,12 @@ const areaVisualConfig: IVisualConfig[] = merge(basicVisualConfig, [
   { channel: 'y1', type: 'number', default: 20 },
   { channel: 'fill', type: 'color', default: 'rgb(201, 111, 209)' },
   { channel: 'stroke', type: 'color', default: 'rgb(201, 111, 209)' },
-  { channel: 'fillOpacity', type: 'number', default: 0.5, options: { min: 0, max: 1, step: 0.1 } }
+  {
+    channel: 'fillOpacity',
+    type: 'number',
+    default: 0.5,
+    options: { min: 0, max: 1, step: 0.1 }
+  }
 ]);
 
 const polygonVisualConfig: IVisualConfig[] = merge(basicVisualConfig, [

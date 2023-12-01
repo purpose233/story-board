@@ -1,0 +1,25 @@
+.link-icon-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 20px;
+  height: 20px;
+  margin-left: 4px;
+  cursor: pointer;
+
+  .link-icon,
+  .link-icon-danger {
+    transition: 0.3s all;
+    outline: none;
+  }
+
+  &:hover {
+    .link-icon {
+      color: var(--semi-color-info-hover);
+    }
+
+    .link-icon-danger {
+      color: var(--semi-color-danger-hover);
+    }
+  }
+}

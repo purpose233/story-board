@@ -22,6 +22,9 @@ import { ShapeMark } from './marks/shape';
 import { SymbolMark } from './marks/symbol';
 import { LineMark } from './marks/line';
 import { PolygonlMark } from './marks/polygon';
+import type { ScaleSpec } from './scales/base';
+import { Scale } from './scales/base';
+import { Data } from './data/base';
 
 export interface EditorConfig {
   container: string | HTMLElement;
@@ -60,13 +63,17 @@ export class Editor {
   private interaction: Interaction;
   private root: GroupMark | null;
   private markMap: Map<string, CommonMark>;
+  scales: Scale[];
+  dataList: Data[];
 
   constructor(config: EditorConfig) {
     this.config = config;
     this.interaction = new Interaction(this);
     this.layers = [];
     this.markMap = new Map();
+    this.scales = [];
     this.root = null;
+    this.dataList = [];
   }
 
   init() {
@@ -152,6 +159,42 @@ export class Editor {
     return isString(this.config.container) ? document.getElementById(this.config.container)! : this.config.container;
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  createData(values: any[]) {
+    const data = new Data(this.view, values);
+    this.dataList.push(data);
+    return data;
+  }
+
+  getDataById(id: string) {
+    return this.dataList.find(data => data.id === id);
+  }
+
+  createScale(spec: ScaleSpec) {
+    const scale = new Scale(this.view, spec);
+    this.scales.push(scale);
+    return scale;
+  }
+
+  removeScale(id: string) {
+    const index = this.scales.findIndex(scale => scale.id === id);
+    if (index !== -1) {
+      this.scales.splice(index, 1);
+    }
+  }
+
+  getScaleById(id: string) {
+    return this.scales.find(scale => scale.id === id);
+  }
+
+  getViewScales() {
+    return this.scales.map(scale => scale.getViewElement());
+  }
+
+  getViewScaleById(id: string) {
+    return this.scales.find(scale => scale.id === id)?.getViewElement() || null;
+  }
+
   addEventListener(type: string, handler: InteractionEventHandler) {
     this.view.addEventListener(type, handler);
   }
@@ -166,7 +209,11 @@ export class Editor {
 
   render() {
     this.view.removeAllGrammars();
+    this.view.removeAllInteractions();
+    this.view.removeAllGraphicItems();
     const rootGroup = this.view.group(this.view.rootMark).encode(this.root!.getVisuals());
+    this.dataList.forEach(data => data.compile());
+    this.scales.forEach(scale => scale.compile());
     this.getElements().forEach(element => element.compile(rootGroup));
     this.view.runAsync();
   }
